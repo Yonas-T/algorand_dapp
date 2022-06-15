@@ -1,9 +1,22 @@
 from algosdk import account, mnemonic
 
-def generate_algorand_keypair():
-    private_key, address = account.generate_account()
-    passphrase = mnemonic.from_private_key(private_key)
-    print("My address: {}".format(address))
-    print("My private key: {}".format(private_key))
-    print("My passphrase: {}".format(mnemonic.from_private_key(private_key)))
-    return address, private_key, passphrase
+
+class Account:
+    """Represents a private key and address for an Algorand account"""
+
+    def __init__(self, privateKey: str) -> None:
+        self.sk = privateKey
+        self.addr = account.address_from_private_key(privateKey)
+
+    def getAddress(self) -> str:
+        return self.addr
+
+    def getPrivateKey(self) -> str:
+        return self.sk
+
+    def getMnemonic(self) -> str:
+        return mnemonic.from_private_key(self.sk)
+
+    @classmethod
+    def FromMnemonic(cls, m: str) -> "Account":
+        return cls(mnemonic.to_private_key(m))
